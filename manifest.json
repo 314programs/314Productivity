@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
-    "name": "Hello Extensions",
-    "description": "Base Level Extension",
-    "version": "1.0",
+    "name": "314productivity",
+    "description": "A chrome extension to boost your productivity...\n By pressuring you.",
+    "version": "0.1",
 
     "action": {
       "default_popup": "popup/popup.html"
