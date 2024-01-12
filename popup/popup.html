@@ -11,17 +11,9 @@
 </head>
 <body>
     <div class="container m-4">
-        <h1 class="title">
+        <h1 class="title has-text-centered">
             314Productivity
         </h1>
-    </div>
-
-    <div class="field m-2">
-        <label class = "label">Current productivity </label>
-        <div style = "margin-bottom: 10px;">
-            <span class = "tag is-success">Running</span>
-            <span class = "tag is-danger">Stopped</span>
-        </div>
     </div>
 
 
@@ -30,11 +22,13 @@
             <label class="label" style = "margin-right: 20px">Time limit (Minutes)</label>
             <input class="button is-success is-small mr-2" type="submit" value="Limit on">
         </div>
-        <input class="input" type="text" placeholder="Input minute(integer)" style = "margin-bottom: 15px;">
+        <input class="input" type="text" placeholder="Input minute(integer)" style = "margin-bottom: 15px;" value = "60">
+
 
 
         <label class = "label">Limited Websites</label>
         <textarea class="textarea" placeholder="These websites can be used for a limited time per day. Please separate the websites using a new line." rows="5" style = "margin-bottom: 15px;"></textarea>
+
 
 
         <div class="field is-flex" style="justify-content: space-between; width: 100%;">
@@ -44,16 +38,43 @@
         <textarea class="textarea" placeholder="These websites are completely blocked. Please separate the websites using a new line." rows="5" style = "margin-bottom: 15px;"></textarea>
 
 
+
         <div class="field is-flex" style="justify-content: space-between; width: 100%;">
             <label class="label" style = "margin-right: 20px">Remind timer</label>
             <input class="button is-success is-small mr-2" type="submit" value="Timer on">
         </div>
 
+
+
         <div class="field is-flex" style="justify-content: space-between; width: 100%;">
             <label class="label" style = "margin-right: 20px">Scolding timer</label>
             <input class="button is-success is-small mr-2" type="submit" value="Scolding on">
         </div>
-        <input class="input" type="text" placeholder="Input minute(integer)" style = "margin-bottom: 15px;">
+        <input class="input" type="text" placeholder="Input minute(integer)" style = "margin-bottom: 15px;" value = "20">
+
+
+
+        <div class="field is-flex" style="justify-content: space-between; width: 100%;">
+            <label class="label" style = "margin-right: 20px">Scolding audio</label>
+            <input class="button is-success is-small mr-2" type="submit" value="Play">
+        </div>
+        <div class="select is-fullwidth" style = "margin-bottom: 15px;">
+            <select>
+                <option selected>None</option>
+                <option>Alarm</option>
+                <option>Bruh</option>
+                <option>Vine Boom</option>
+                <option>Fire in the hole</option>
+                <option>Metal Pipe</option>
+            </select>
+        </div>
+
+
+
+        <div class="field is-flex" style="justify-content: space-between; width: 100%;">
+            <label class="label" style = "margin-right: 20px">Scolding text</label>
+        </div>
+        <textarea class="textarea" placeholder="Input a message for your lazy self" rows="5" style = "margin-bottom: 15px;">You should be productive... NOW!</textarea>
 
 
     </div>
@@ -63,14 +84,10 @@
         <img src="../images/placeholder.png" alt="Display Image" style = "margin-top: 15px;"/>
     </div>
 
-    
+
     <div class="container m-3">
         <button class="button is-success is-fullwidth">Save</button>
     </div>
-    <div class="container m-3">
-        <button class="button is-danger is-fullwidth">Reset</button>
-    </div>
-
 
     <!--
         <audio src="../audio/fire-in-the-hole-geometry-dash.mp3" autoplay></audio>
