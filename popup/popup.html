@@ -18,22 +18,44 @@
 
     <div class="field m-2">
         <label class = "label">Current productivity </label>
-        <span class = "tag is-success">Running</span>
-        <span class = "tag is-danger">Stopped</span>
+        <div style = "margin-bottom: 10px;">
+            <span class = "tag is-success">Running</span>
+            <span class = "tag is-danger">Stopped</span>
+        </div>
     </div>
 
 
     <div class="field m-2">
-        <label class = "label">Time limit(Minutes)</label>
-        <input class="button is-success is-small" type="submit" value="Limit on">
+        <div class="field is-flex" style="justify-content: space-between; width: 100%;">
+            <label class="label" style = "margin-right: 20px">Time limit (Minutes)</label>
+            <input class="button is-success is-small mr-2" type="submit" value="Limit on">
+        </div>
+        <input class="input" type="text" placeholder="Input minute(integer)" style = "margin-bottom: 15px;">
 
-        <input class="input" type="text" placeholder="Integer required">
 
         <label class = "label">Limited Websites</label>
-        <textarea class="textarea" placeholder="These websites can be used for a limited time per day. Please separate the websites using a new line." rows="5"></textarea>
+        <textarea class="textarea" placeholder="These websites can be used for a limited time per day. Please separate the websites using a new line." rows="5" style = "margin-bottom: 15px;"></textarea>
 
-        <label class = "label">Blocked Websites</label>
-        <textarea class="textarea" placeholder="These websites are completely blocked. Please separate the websites using a new line." rows="5"></textarea>
+
+        <div class="field is-flex" style="justify-content: space-between; width: 100%;">
+            <label class = "label" style = "margin-right: 36px">Blocked Websites</label>
+            <input class="button is-success is-small mr-2" type="submit" value="Block on">
+        </div>
+        <textarea class="textarea" placeholder="These websites are completely blocked. Please separate the websites using a new line." rows="5" style = "margin-bottom: 15px;"></textarea>
+
+
+        <div class="field is-flex" style="justify-content: space-between; width: 100%;">
+            <label class="label" style = "margin-right: 20px">Remind timer</label>
+            <input class="button is-success is-small mr-2" type="submit" value="Timer on">
+        </div>
+
+        <div class="field is-flex" style="justify-content: space-between; width: 100%;">
+            <label class="label" style = "margin-right: 20px">Scolding timer</label>
+            <input class="button is-success is-small mr-2" type="submit" value="Scolding on">
+        </div>
+        <input class="input" type="text" placeholder="Input minute(integer)" style = "margin-bottom: 15px;">
+
+
     </div>
 
 
@@ -41,6 +63,13 @@
         <img src="../images/placeholder.png" alt="Display Image" style = "margin-top: 15px;"/>
     </div>
 
+    
+    <div class="container m-3">
+        <button class="button is-success is-fullwidth">Save</button>
+    </div>
+    <div class="container m-3">
+        <button class="button is-danger is-fullwidth">Reset</button>
+    </div>
 
 
     <!--
