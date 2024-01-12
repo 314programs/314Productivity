@@ -16,11 +16,37 @@
         </h1>
     </div>
 
-    <div>
-        <img src="../images/placeholder.png" alt="Display Image"/>
+    <div class="field m-2">
+        <label class = "label">Current productivity </label>
+        <span class = "tag is-success">Running</span>
+        <span class = "tag is-danger">Stopped</span>
     </div>
 
-    <audio src="../audio/fire-in-the-hole-geometry-dash.mp3" autoplay></audio>
+
+    <div class="field m-2">
+        <label class = "label">Time limit(Minutes)</label>
+        <input class="button is-success is-small" type="submit" value="Limit on">
+
+        <input class="input" type="text" placeholder="Integer required">
+
+        <label class = "label">Limited Websites</label>
+        <textarea class="textarea" placeholder="These websites can be used for a limited time per day. Please separate the websites using a new line." rows="5"></textarea>
+
+        <label class = "label">Blocked Websites</label>
+        <textarea class="textarea" placeholder="These websites are completely blocked. Please separate the websites using a new line." rows="5"></textarea>
+    </div>
+
+
+    <div class="field m-2">
+        <img src="../images/placeholder.png" alt="Display Image" style = "margin-top: 15px;"/>
+    </div>
+
+
+
+    <!--
+        <audio src="../audio/fire-in-the-hole-geometry-dash.mp3" autoplay></audio>
+    -->
+
     
 </body>
 </html>
