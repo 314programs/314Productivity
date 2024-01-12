@@ -19,9 +19,9 @@
     <div class="field m-2">
         <div class="field is-flex" style="justify-content: space-between; width: 100%;">
             <label class="label" style = "margin-right: 20px">Time limit (Minutes)</label>
-            <input class="button is-success is-small mr-2" type="submit" value="Limit on" id = "LimitTime">
+            <input class="button is-success is-small mr-2" type="submit" value="Limit on" id = "LimitButton">
         </div>
-        <input class="input" type="text" placeholder="Input minute(integer)" style = "margin-bottom: 15px;" value = "60">
+        <input class="input" type="text" placeholder="Input minute(integer)" style = "margin-bottom: 15px;" value = "60" id = "LimitTime">
 
 
 
@@ -73,7 +73,7 @@
         <div class="field is-flex" style="justify-content: space-between; width: 100%;">
             <label class="label" style = "margin-right: 20px">Scolding text</label>
         </div>
-        <textarea class="textarea" placeholder="Input a message for your lazy self" rows="5" style = "margin-bottom: 15px;">You should be productive... NOW!</textarea>
+        <textarea class="textarea" id = "ScoldText" placeholder="Input a message for your lazy self" rows="5" style = "margin-bottom: 15px;">You should be productive... NOW!</textarea>
 
 
     </div>
@@ -94,4 +94,6 @@
 
     
 </body>
+
+<script src="popup.js"></script>
 </html>
