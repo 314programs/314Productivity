@@ -29,6 +29,17 @@ function stopAllJavaScriptAudio() {
     });
 }
 
+
+SaveButtonElement.onclick = () => {
+    const prefs = {
+        LimitTime: LimitTimeElement.value,
+        ScoldList: ScoldListElement.selectedIndex
+    }
+
+    chrome.runtime.sendMessage({event: "onStart", prefs});
+}
+
+
 PlayButtonElement.onclick = function(){
     stopAllJavaScriptAudio();
     let SelectedOption = ScoldListElement.options[ScoldListElement.selectedIndex];
@@ -41,3 +52,14 @@ PlayButtonElement.onclick = function(){
         PlayAudio.play();
     }
 }
+
+
+chrome.storage.local.get(["LimitTime", "ScoldList"], (result) => {
+    const {LimitTime, ScoldList} = result;
+    if(LimitTime){
+        LimitTimeElement.value = LimitTime;
+    }
+    if(ScoldList){
+        ScoldListElement.selectedIndex = ScoldList;
+    }
+})
