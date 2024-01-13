@@ -17,6 +17,8 @@
 
 
     <div class="field m-2">
+        <h1 class="title has-text-centered" id = "RemainTime">00:00:00</h1>
+
         <div class="field is-flex" style="justify-content: space-between; width: 100%;">
             <label class="label" style = "margin-right: 20px">Time limit (Minutes)</label>
             <input class="button is-small mr-2 is-success" type="submit" value="Limit on" id = "LimitButton">
@@ -29,19 +31,11 @@
         <textarea class="textarea" id = "LimitWebsite" placeholder="These websites can be used for a limited time per day. Please separate the websites using a new line." rows="5" style = "margin-bottom: 15px;"></textarea>
 
 
-
         <div class="field is-flex" style="justify-content: space-between; width: 100%;">
             <label class = "label" style = "margin-right: 36px">Blocked Websites</label>
             <input class="button is-success is-small mr-2" type="submit" value="Block on" id = "BlockButton">
         </div>
         <textarea class="textarea" id = "BlockWebsite" placeholder="These websites are completely blocked. Please separate the websites using a new line." rows="5" style = "margin-bottom: 15px;"></textarea>
-
-
-
-        <div class="field is-flex" style="justify-content: space-between; width: 100%;">
-            <label class="label" style = "margin-right: 20px">Remind timer</label>
-            <input class="button is-success is-small mr-2" type="submit" value="Timer on" id = "RemindButton">
-        </div>
 
 
 
@@ -88,12 +82,8 @@
         <button class="button is-success is-fullwidth" id = "SaveButton">Save</button>
     </div>
 
-    <!--
-        <audio src="../audio/fire-in-the-hole-geometry-dash.mp3" autoplay></audio>
-    -->
-
-    
 </body>
 
 <script src="popup.js"></script>
+
 </html>

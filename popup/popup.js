@@ -7,9 +7,7 @@ const LimitWebsiteElement = document.getElementById("LimitWebsite")
 const BlockButtonElement = document.getElementById("BlockButton")
 const BlockWebsiteElement = document.getElementById("BlockWebsite")
 
-
-const RemindButtonElement = document.getElementById("RemindButton")
-
+const RemainTimeElement = document.getElementById("RemainTime")
 
 const ScoldButtonElement = document.getElementById("ScoldButton")
 const ScoldTimeElement = document.getElementById("ScoldTime")
@@ -29,7 +27,6 @@ function stopAllJavaScriptAudio() {
     });
 }
 
-
 SaveButtonElement.onclick = () => {
     const prefs = {
         LimitTime: LimitTimeElement.value,
@@ -39,7 +36,7 @@ SaveButtonElement.onclick = () => {
         BlockButton: BlockButtonElement.value,
         BlockWebsite: BlockWebsiteElement.value,
 
-        RemindButton: RemindButtonElement.value,
+        RemainTime: RemainTimeElement.value,
 
         ScoldButton: ScoldButtonElement.value,
         ScoldTime: ScoldTimeElement.value,
@@ -76,14 +73,16 @@ function ButtonLoad(ButtonElement, On){
 
 LimitButtonElement.onclick = function(){
     ToggleButton(LimitButtonElement, "Limit on", "Limit off");
+    if(LimitButtonElement.value == "Limit on"){
+        chrome.runtime.sendMessage({action: "Limit on"});
+    }
+    else{
+        chrome.runtime.sendMessage({action: "Limit off"});
+    }
 }
 
 BlockButtonElement.onclick = function(){
     ToggleButton(BlockButtonElement, "Block on", "Block off");
-}
-
-RemindButtonElement.onclick = function(){
-    ToggleButton(RemindButtonElement, "Timer on", "Timer off");
 }
 
 ScoldButtonElement.onclick = function(){
@@ -105,14 +104,34 @@ PlayButtonElement.onclick = function(){
 }
 
 
-chrome.storage.local.get(["LimitTime", "LimitButton", "LimitWebsite", "BlockButton", "BlockWebsite", "RemindButton", "ScoldButton", "ScoldTime", "ScoldList", "ScoldText"], (result) => {
-    const {LimitTime, LimitButton, LimitWebsite, BlockButton, BlockWebsite, RemindButton, ScoldButton, ScoldTime, ScoldList, ScoldText} = result;
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+    if (message.action === "updateTimer") {
+        var hour = Math.floor(message.time/3600);
+        var minute = Math.floor(message.time/60);
+        var second = Math.floor(message.time%60);
+
+        if(hour < 10) hour = "0" + hour;
+        if(minute < 10) minute = "0" + minute;
+        if(second < 10) second = "0" + second;
+
+        RemainTimeElement.textContent = hour + ":" + minute + ":" + second;
+    }
+});
+
+chrome.storage.local.get(["LimitTime", "LimitButton", "LimitWebsite", "BlockButton", "BlockWebsite", "RemainTime", "ScoldButton", "ScoldTime", "ScoldList", "ScoldText"], (result) => {
+    const {LimitTime, LimitButton, LimitWebsite, BlockButton, BlockWebsite, RemainTime, ScoldButton, ScoldTime, ScoldList, ScoldText} = result;
     if(LimitTime){
         LimitTimeElement.value = LimitTime;
     }
     if(LimitButton){
         LimitButtonElement.value = LimitButton;
         ButtonLoad(LimitButtonElement, "Limit on");
+        if(LimitButton == "Limit on"){
+            chrome.runtime.sendMessage({action: "Limit on"});
+        }
+        else{
+            chrome.runtime.sendMessage({action: "Limit off"});
+        }
     }
     if(LimitWebsite){
         LimitWebsiteElement.value = LimitWebsite;
@@ -126,10 +145,6 @@ chrome.storage.local.get(["LimitTime", "LimitButton", "LimitWebsite", "BlockButt
     }
     if(BlockWebsite){
         BlockWebsiteElement.value = BlockWebsite;
-    }
-    if(RemindButton){
-        RemindButtonElement.value = RemindButton;
-        ButtonLoad(RemindButtonElement, "Timer on");
     }
     if(ScoldButton){
         ScoldButtonElement.value = ScoldButton;
