@@ -97,7 +97,6 @@ function startCountdown(durationInSeconds) {
 
     }, 1000); // 1000 milliseconds = 1 second
 }
-startCountdown(45);
 
 
 function GetDate(){
@@ -113,6 +112,13 @@ function GetDate(){
     const currentTime = `${hours}:${minutes}:${seconds}`;
     return currentTime;
 }
+
+const interval = setInterval(() => {
+    if(GetDate() == "0:0:0"){
+        startCountdown(45);
+    }
+}, 1000); // 1000 milliseconds = 1 second
+
 
 
 
