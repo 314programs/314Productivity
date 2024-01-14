@@ -28,8 +28,12 @@ chrome.runtime.onMessage.addListener(data => {
     
 })
 
+var LimitWebsiteList = [];
+var BlockWebsiteList = [];
+
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     if (message.action === "updateTimer") {
+        message.time = Math.max(0, message.time);
         var hour = Math.floor(message.time/3600);
         var minute = Math.floor(message.time/60);
         var second = Math.floor(message.time%60);
@@ -40,33 +44,87 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 
         RemainTimeElement.textContent = hour + ":" + minute + ":" + second;
     }
+
+    if(message.action == "LimitChange"){
+        LimitWebsiteList = message.content.split("\n");
+    }
+    if(message.action == "BlockChange"){
+        BlockWebsiteList = message.content.split("\n");
+    }
 });
 
-// background.js
+
+function CheckBlocked(CurSite){
+    if(BlockWebsiteList.length == 0) return false;
+    for(var item of BlockWebsiteList){
+        if(CurSite.includes(item) && item != ''){
+            return true
+        }
+    }
+    return false;
+}
+
+function CheckLimited(CurSite){
+    if(LimitWebsiteList.length == 0) return false;
+    for(var item of LimitWebsiteList){
+        if(CurSite.includes(item) && item != ''){
+            return true
+        }
+    }
+    return false;
+}
+
+
+var LimitOn = false;
+var BlockOn = false;
+var RedirectUrl = "https://en.wikipedia.org/wiki/Procrastination";
+var TimeOver = false;
 
 // Function to check the active tab's URL
 function checkActiveTabUrl() {
+    var CurTab;
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
         if (tabs[0]) {
             var activeTab = tabs[0];
             var activeTabURL = activeTab.url;
-            console.log("Active tab URL:", activeTabURL);
+            CurTab = activeTabURL;
+
+            if(CheckLimited(activeTabURL) && LimitButtonOn){
+                LimitOn = true;
+            }
+            else LimitOn = false;
+            if(CheckBlocked(activeTabURL) && BlockButtonOn){
+                BlockOn = true;
+            }
+            else BlockOn = false;
         }
     });
+
+    if((BlockOn || (TimeOver && LimitOn)) && CurTab != RedirectUrl){
+        chrome.tabs.query({currentWindow: true, active: true}, function (tab) {
+            chrome.tabs.update(tab.id, {url: RedirectUrl});
+        });
+        BlockOn = false;
+        LimitOn = false;
+    }
 }
-// Poll every 5 seconds (5000 milliseconds)
 const pollingInterval = 1000; 
 setInterval(checkActiveTabUrl, pollingInterval);
 
 
-var LimitOn = false;
+var LimitButtonOn = false;
+var BlockButtonOn = false;
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-    if (message.action === "Limit on") {
-        LimitOn = true;
+    if (message.action == "LimitButton"){
+        if(message.content == "Limit on") LimitButtonOn = true;
+        else LimitButtonOn = false;
     }
-    else{
-        LimitOn = false;
+    
+    if (message.action == "BlockButton"){
+        if(message.content == "Block on") BlockButtonOn = true;
+        else BlockButtonOn = false;
     }
+
 });
 
 
@@ -75,22 +133,14 @@ function startCountdown(durationInSeconds) {
 
     // Update the countdown every second
     const interval = setInterval(() => {
-        // Calculate minutes and seconds from remainingTime
-        const minutes = Math.floor(remainingTime / 60);
-        const seconds = remainingTime % 60;
-
-        // Format the output string
-        const formattedTime = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-
         // Decrease the remaining time
-        console.log(LimitOn);
         if(LimitOn){
-            console.log(data.prefs.LimitButton);
             remainingTime--;
         }
 
         // Check if the countdown is finished
-        if (remainingTime < 0) {
+        if (remainingTime == 0) {
+            TimeOver = true;
             clearInterval(interval);
         }
         chrome.runtime.sendMessage({action: "updateTimer", time: remainingTime});
@@ -112,9 +162,11 @@ function GetDate(){
     const currentTime = `${hours}:${minutes}:${seconds}`;
     return currentTime;
 }
+startCountdown(45);
 
 const interval = setInterval(() => {
     if(GetDate() == "0:0:0"){
+        TimeOver = false;
         startCountdown(45);
     }
 }, 1000); // 1000 milliseconds = 1 second

@@ -43,7 +43,10 @@ SaveButtonElement.onclick = () => {
         ScoldList: ScoldListElement.selectedIndex,
         ScoldText: ScoldTextElement.value
     }
-
+    chrome.runtime.sendMessage({action: "LimitChange", content: LimitWebsiteElement.value});
+    chrome.runtime.sendMessage({action: "BlockChange", content: BlockWebsiteElement.value});
+    chrome.runtime.sendMessage({action: "LimitButton", content: LimitButtonElement.value});
+    chrome.runtime.sendMessage({action: "BlockButton", content: BlockButtonElement.value});
     chrome.runtime.sendMessage({event: "onStart", prefs});
 }
 
@@ -83,6 +86,12 @@ LimitButtonElement.onclick = function(){
 
 BlockButtonElement.onclick = function(){
     ToggleButton(BlockButtonElement, "Block on", "Block off");
+    if(LimitButtonElement.value == "Block on"){
+        chrome.runtime.sendMessage({action: "Block on"});
+    }
+    else{
+        chrome.runtime.sendMessage({action: "Block off"});
+    }
 }
 
 ScoldButtonElement.onclick = function(){
@@ -142,6 +151,12 @@ chrome.storage.local.get(["LimitTime", "LimitButton", "LimitWebsite", "BlockButt
     if(BlockButton){
         BlockButtonElement.value = BlockButton;
         ButtonLoad(BlockButtonElement, "Block on");
+        if(LimitButtonElement.value == "Block on"){
+            chrome.runtime.sendMessage({action: "Block on"});
+        }
+        else{
+            chrome.runtime.sendMessage({action: "Block off"});
+        }
     }
     if(BlockWebsite){
         BlockWebsiteElement.value = BlockWebsite;
@@ -156,5 +171,7 @@ chrome.storage.local.get(["LimitTime", "LimitButton", "LimitWebsite", "BlockButt
     if(ScoldText){
         ScoldTextElement.value = ScoldText;
     }
+    chrome.runtime.sendMessage({action: "LimitChange", content: LimitWebsiteElement.value});
+    chrome.runtime.sendMessage({action: "BlockChange", content: BlockWebsiteElement.value});
     
 })
