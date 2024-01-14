@@ -114,6 +114,7 @@ setInterval(checkActiveTabUrl, pollingInterval);
 
 var LimitButtonOn = false;
 var BlockButtonOn = false;
+var Changed = false;
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     if (message.action == "LimitButton"){
         if(message.content == "Limit on") LimitButtonOn = true;
@@ -125,21 +126,42 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
         else BlockButtonOn = false;
     }
 
+    if(message.action == "LimitTime" && message.content != TimeLimit){
+        Changed = true;
+        TimeLimit = message.content;
+
+        if(TimeOver){
+            Changed = false;
+            TimeOver = false;
+            startCountdown(Math.max(TimeLimit - TimePassed, 1));
+        }
+    }
+
 });
 
 
+var TimePassed = 0;
+var TimeLimit = 60;
 function startCountdown(durationInSeconds) {
     let remainingTime = durationInSeconds;
 
     // Update the countdown every second
     const interval = setInterval(() => {
+        if(Changed){
+            Changed = false;
+            startCountdown(Math.max(TimeLimit - TimePassed, 1));
+            clearInterval(interval);
+            return;
+        }
         // Decrease the remaining time
         if(LimitOn){
             remainingTime--;
+            TimePassed++;
         }
+        
 
         // Check if the countdown is finished
-        if (remainingTime == 0) {
+        if (remainingTime <= 0) {
             TimeOver = true;
             clearInterval(interval);
         }
@@ -162,12 +184,14 @@ function GetDate(){
     const currentTime = `${hours}:${minutes}:${seconds}`;
     return currentTime;
 }
-startCountdown(45);
 
+
+startCountdown(TimeLimit);
 const interval = setInterval(() => {
     if(GetDate() == "0:0:0"){
         TimeOver = false;
-        startCountdown(45);
+        Changed = true;
+        startCountdown(TimeLimit);
     }
 }, 1000); // 1000 milliseconds = 1 second
 
