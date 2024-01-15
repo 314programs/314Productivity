@@ -140,12 +140,6 @@ chrome.storage.local.get(["LimitTime", "LimitButton", "LimitWebsite", "BlockButt
     if(LimitButton){
         LimitButtonElement.value = LimitButton;
         ButtonLoad(LimitButtonElement, "Limit on");
-        if(LimitButton == "Limit on"){
-            chrome.runtime.sendMessage({action: "Limit on"});
-        }
-        else{
-            chrome.runtime.sendMessage({action: "Limit off"});
-        }
     }
     if(LimitWebsite){
         LimitWebsiteElement.value = LimitWebsite;
@@ -156,12 +150,6 @@ chrome.storage.local.get(["LimitTime", "LimitButton", "LimitWebsite", "BlockButt
     if(BlockButton){
         BlockButtonElement.value = BlockButton;
         ButtonLoad(BlockButtonElement, "Block on");
-        if(LimitButtonElement.value == "Block on"){
-            chrome.runtime.sendMessage({action: "Block on"});
-        }
-        else{
-            chrome.runtime.sendMessage({action: "Block off"});
-        }
     }
     if(BlockWebsite){
         BlockWebsiteElement.value = BlockWebsite;
@@ -178,6 +166,8 @@ chrome.storage.local.get(["LimitTime", "LimitButton", "LimitWebsite", "BlockButt
     }
     chrome.runtime.sendMessage({action: "LimitChange", content: LimitWebsiteElement.value});
     chrome.runtime.sendMessage({action: "BlockChange", content: BlockWebsiteElement.value});
+    chrome.runtime.sendMessage({action: "LimitButton", content: LimitButtonElement.value});
+    chrome.runtime.sendMessage({action: "BlockButton", content: BlockButtonElement.value});
     chrome.runtime.sendMessage({action: "LimitTime", content: LimitTimeElement.value});
     
 })

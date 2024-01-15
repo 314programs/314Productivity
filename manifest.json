@@ -38,9 +38,7 @@
         "storage",
         "activeTab",
         "tabs",
-        "webRequest",
-        "webRequestBlocking",
-        "<all_urls>"
+        "webRequest"
     ],
     
     "host_permissions": [
