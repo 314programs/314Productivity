@@ -216,6 +216,7 @@ const interval = setInterval(() => {
     if(GetDate() == "0:0:0"){
         TimeOver = false;
         Changed = true;
+        TimePassed = 0;
         startCountdown(TimeLimit);
     }
 }, 1000); // 1000 milliseconds = 1 second
