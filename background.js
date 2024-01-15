@@ -11,9 +11,10 @@ let data = {
         "RemainTime": "3600",
 
         "ScoldButton": "Scolding on",
-        "ScoldTime": "20",
-        "ScoldList": "None",
-        "ScoldText": "You should be productive... NOW!"
+        "ScoldTime": "15",
+        "ScoldList": "0",
+        "ScoldText": "You should be productive... NOW!",
+        "ScoldAudio": "None"
     }
 }
 
@@ -55,6 +56,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 function CheckBlocked(CurSite){
     if(BlockWebsiteList.length == 0) return false;
     for(var item of BlockWebsiteList){
+        if(item == RedirectUrl) continue;
         if(CurSite.includes(item) && item != ''){
             return true
         }
@@ -65,6 +67,7 @@ function CheckBlocked(CurSite){
 function CheckLimited(CurSite){
     if(LimitWebsiteList.length == 0) return false;
     for(var item of LimitWebsiteList){
+        if(item == RedirectUrl) continue;
         if(CurSite.includes(item) && item != ''){
             return true
         }
@@ -95,6 +98,18 @@ function checkActiveTabUrl() {
                 BlockOn = true;
             }
             else BlockOn = false;
+            
+            if(ScoldButtonOn && CheckLimited(CurTab)){
+                ScoldTimer++;
+                if(ScoldTimer >= ScoldLimit){
+                    playAudio(AudioName);
+                    createNotification(UserMessage);
+                    ScoldTimer = 0;
+                }
+            }
+            else{
+                ScoldTimer = 0;
+            }
         }
     });
 
@@ -103,21 +118,51 @@ function checkActiveTabUrl() {
             chrome.tabs.update(tab.id, {url: RedirectUrl});
         });
         BlockOn = false;
-        LimitOn = false;
     }
+
+    if(LimitOn){
+        chrome.action.setIcon({path: "images/icon-32-true.png"});
+    }
+    else{
+        chrome.action.setIcon({path: "images/icon-32-false.png"});
+    }
+
+    
 }
 const pollingInterval = 1000; 
 setInterval(checkActiveTabUrl, pollingInterval);
 
+function playAudio(name_) {
+    chrome.tabs.create({ url: chrome.runtime.getURL("audioSite/"+name_+".html") });
+}
 
-var LimitButtonOn = false;
-var BlockButtonOn = false;
+// Call the playAudio function when needed
+
+
+var LimitButtonOn = true;
+var BlockButtonOn = true;
+var ScoldButtonOn = true;
 var Changed = false;
 var TimeLimit = 60;
+var ScoldLimit = 15;
+var ScoldTimer = 0;
+var UserMessage = "You should be productive... NOW!";
+var AudioName = "None";
+
+function createNotification(MessageContent) {
+    chrome.notifications.create('', {
+        type: 'basic',
+        iconUrl: 'images/placeholder.png', // Path to the icon
+        title: '314Productivity',
+        message: MessageContent,
+        priority: 2
+    });
+}
 
 
-chrome.storage.local.get(["LimitTime", "LimitButton", "LimitWebsite", "BlockButton", "BlockWebsite"], (result) => {
-    const {LimitTime, LimitButton, LimitWebsite, BlockButton, BlockWebsite} = result;
+
+chrome.storage.local.get(["LimitTime", "LimitButton", "LimitWebsite", "BlockButton", "BlockWebsite", "ScoldButton", "ScoldText", "ScoldTime", "ScoldAudio"], (result) => {
+    const {LimitTime, LimitButton, LimitWebsite, BlockButton, BlockWebsite, ScoldButton, ScoldText, ScoldTime, ScoldAudio} = result;
     if(LimitButton == undefined){
         LimitButtonOn = true;
     }
@@ -132,12 +177,21 @@ chrome.storage.local.get(["LimitTime", "LimitButton", "LimitWebsite", "BlockButt
         if(BlockButton == "Block on") BlockButtonOn = true;
     }
 
+    if(ScoldButton == undefined){
+        ScoldButtonOn = true;
+    }
+    else{
+        if(ScoldButton == "Scolding on") ScoldButtonOn = true;
+    }
+
     if(LimitWebsite != undefined) LimitWebsiteList = LimitWebsite.split("\n");
     if(BlockWebsite != undefined) BlockWebsiteList = BlockWebsite.split("\n");
-    if(TimeLimit != undefined) TimeLimit = LimitTime;
-    startCountdown(TimeLimit);
+    if(LimitTime != undefined) TimeLimit = LimitTime;
+    if(ScoldText != undefined) UserMessage = ScoldText;
+    if(ScoldTime != undefined) ScoldLimit = ScoldTime;
+    if(ScoldAudio != undefined) AudioName = ScoldAudio;
+    startCountdown(TimeLimit * 60);
 })
-
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     if (message.action == "LimitButton"){
@@ -150,6 +204,11 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
         else BlockButtonOn = false;
     }
 
+    if (message.action == "ScoldButton"){
+        if(message.content == "Scolding on") ScoldButtonOn = true;
+        else ScoldButtonOn = false;
+    }
+
     if(message.action == "LimitTime" && message.content != TimeLimit && message.content != ''){
         Changed = true;
         TimeLimit = message.content;
@@ -157,15 +216,24 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
         if(TimeOver){
             Changed = false;
             TimeOver = false;
-            startCountdown(Math.max(TimeLimit - TimePassed, 1));
+            startCountdown(Math.max(TimeLimit*60 - TimePassed, 1));
         }
     }
 
+    if(message.action == "ScoldMessage"){
+        UserMessage = message.content;
+    }
+    if(message.action == "ScoldChange"){
+        ScoldLimit = message.content;
+        ScoldTimer = 0;
+    }
+    if(message.action == "AudioChange"){
+        AudioName = message.content;
+    }
 });
 
 
 var TimePassed = 0;
-
 function startCountdown(durationInSeconds) {
     let remainingTime = durationInSeconds;
 
@@ -173,16 +241,25 @@ function startCountdown(durationInSeconds) {
     const interval = setInterval(() => {
         if(Changed){
             Changed = false;
-            startCountdown(Math.max(TimeLimit - TimePassed, 1));
+            startCountdown(Math.max(TimeLimit*60 - TimePassed, 1));
             clearInterval(interval);
             return;
         }
         // Decrease the remaining time
         if(LimitOn){
+            if(remainingTime == 300){
+                createNotification("5 minutes left!");
+            }
+            if(remainingTime == 60){
+                createNotification("1 minute left!");
+            }
+            if(remainingTime == 10){
+                createNotification("10 seconds left!");
+            }
+
             remainingTime--;
             TimePassed++;
         }
-        
 
         // Check if the countdown is finished
         if (remainingTime <= 0) {
@@ -210,14 +287,12 @@ function GetDate(){
 }
 
 
-
-
 const interval = setInterval(() => {
     if(GetDate() == "0:0:0"){
         TimeOver = false;
         Changed = true;
         TimePassed = 0;
-        startCountdown(TimeLimit);
+        startCountdown(TimeLimit*60);
     }
 }, 1000); // 1000 milliseconds = 1 second
 

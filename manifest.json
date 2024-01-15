@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
     "name": "314productivity",
-    "description": "A chrome extension to boost your productivity...\n By pressuring you.",
-    "version": "0.1",
+    "description": "A chrome extension to boost your productivity by blocking and limiting your website usage... by aggressively reminding you.",
+    "version": "1.0",
 
     "action": {
       "default_popup": "popup/popup.html"
@@ -10,7 +10,7 @@
 
     "icons": {
         "16": "images/icon-16.png",
-        "32": "images/icon-32.png",
+        "32": "images/icon-32-false.png",
         "48": "images/icon-48.png",
         "128": "images/icon-128.png"
     },
@@ -22,7 +22,7 @@
 
     "web_accessible_resources": [
         {
-          "resources": ["images/icon-128.png"],
+          "resources": ["images/icon-128.png", "audio/sound.mp3"],
           "matches": ["<all_urls>"]
         }
     ],
@@ -38,7 +38,9 @@
         "storage",
         "activeTab",
         "tabs",
-        "webRequest"
+        "notifications",
+        "webRequest",
+        "audio"
     ],
     
     "host_permissions": [

@@ -44,13 +44,18 @@ SaveButtonElement.onclick = () => {
             ScoldButton: ScoldButtonElement.value,
             ScoldTime: ScoldTimeElement.value,
             ScoldList: ScoldListElement.selectedIndex,
-            ScoldText: ScoldTextElement.value
+            ScoldText: ScoldTextElement.value,
+            ScoldAudio: ScoldListElement.options[ScoldListElement.selectedIndex].id
         }
         chrome.runtime.sendMessage({action: "LimitChange", content: LimitWebsiteElement.value});
         chrome.runtime.sendMessage({action: "BlockChange", content: BlockWebsiteElement.value});
         chrome.runtime.sendMessage({action: "LimitButton", content: LimitButtonElement.value});
         chrome.runtime.sendMessage({action: "BlockButton", content: BlockButtonElement.value});
+        chrome.runtime.sendMessage({action: "ScoldButton", content: ScoldButtonElement.value});
         chrome.runtime.sendMessage({action: "LimitTime", content: LimitTimeElement.value});
+        chrome.runtime.sendMessage({action: "ScoldMessage", content: ScoldTextElement.value});
+        chrome.runtime.sendMessage({action: "ScoldChange", content: ScoldTimeElement.value});
+        chrome.runtime.sendMessage({action: "AudioChange", content: ScoldListElement.options[ScoldListElement.selectedIndex].id});
         chrome.runtime.sendMessage({event: "onStart", prefs});
     }
     else{
@@ -85,22 +90,10 @@ function ButtonLoad(ButtonElement, On){
 
 LimitButtonElement.onclick = function(){
     ToggleButton(LimitButtonElement, "Limit on", "Limit off");
-    if(LimitButtonElement.value == "Limit on"){
-        chrome.runtime.sendMessage({action: "Limit on"});
-    }
-    else{
-        chrome.runtime.sendMessage({action: "Limit off"});
-    }
 }
 
 BlockButtonElement.onclick = function(){
     ToggleButton(BlockButtonElement, "Block on", "Block off");
-    if(LimitButtonElement.value == "Block on"){
-        chrome.runtime.sendMessage({action: "Block on"});
-    }
-    else{
-        chrome.runtime.sendMessage({action: "Block off"});
-    }
 }
 
 ScoldButtonElement.onclick = function(){
@@ -165,8 +158,8 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     }
 });
 
-chrome.storage.local.get(["LimitTime", "LimitButton", "LimitWebsite", "BlockButton", "BlockWebsite", "RemainTime", "ScoldButton", "ScoldTime", "ScoldList", "ScoldText"], (result) => {
-    const {LimitTime, LimitButton, LimitWebsite, BlockButton, BlockWebsite, RemainTime, ScoldButton, ScoldTime, ScoldList, ScoldText} = result;
+chrome.storage.local.get(["LimitTime", "LimitButton", "LimitWebsite", "BlockButton", "BlockWebsite", "RemainTime", "ScoldButton", "ScoldTime", "ScoldList", "ScoldText", "ScoldAudio"], (result) => {
+    const {LimitTime, LimitButton, LimitWebsite, BlockButton, BlockWebsite, ScoldButton, ScoldTime, ScoldList, ScoldText, ScoldAudio} = result;
     if(LimitTime){
         LimitTimeElement.value = LimitTime;
     }
@@ -201,6 +194,10 @@ chrome.storage.local.get(["LimitTime", "LimitButton", "LimitWebsite", "BlockButt
     chrome.runtime.sendMessage({action: "BlockChange", content: BlockWebsiteElement.value});
     chrome.runtime.sendMessage({action: "LimitButton", content: LimitButtonElement.value});
     chrome.runtime.sendMessage({action: "BlockButton", content: BlockButtonElement.value});
+    chrome.runtime.sendMessage({action: "ScoldButton", content: ScoldButtonElement.value});
     chrome.runtime.sendMessage({action: "LimitTime", content: LimitTimeElement.value});
+    chrome.runtime.sendMessage({action: "ScoldMessage", content: ScoldTextElement.value});
+    chrome.runtime.sendMessage({action: "ScoldChange", content: ScoldTimeElement.value});
+    chrome.runtime.sendMessage({action: "AudioChange", content: ScoldListElement.options[ScoldListElement.selectedIndex].id});
     
 })
