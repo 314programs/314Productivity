@@ -53,7 +53,6 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     }
 });
 
-
 function CheckBlocked(CurSite){
     if(BlockWebsiteList.length == 0) return false;
     for(var item of BlockWebsiteList){
@@ -84,7 +83,6 @@ var TimeOver = false;
 function checkActiveTabUrl() {
     var CurTab;
     chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-        console.log()
         if (tabs[0]) {
             var activeTab = tabs[0];
             var activeTabURL = activeTab.url;
@@ -116,6 +114,14 @@ setInterval(checkActiveTabUrl, pollingInterval);
 var LimitButtonOn = false;
 var BlockButtonOn = false;
 var Changed = false;
+
+//LimitChange, BlockChange, LimitTime, LimitButton, BlockButton
+if(data.prefs.LimitButton == "Limit on") LimitButtonOn = true;
+if(data.prefs.BlockButton == "Block on") BlockButtonOn = true;
+LimitWebsiteList = data.prefs.LimitWebsite.split("\n");
+BlockWebsiteList = data.prefs.BlockWebsite.split("\n");
+TimeLimit = data.prefs.LimitTime;
+
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     console.log(message.action + " " + message.content);
     if (message.action == "LimitButton"){
@@ -143,7 +149,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 
 
 var TimePassed = 0;
-var TimeLimit = 60;
+var TimeLimit;
 function startCountdown(durationInSeconds) {
     let remainingTime = durationInSeconds;
 
