@@ -234,6 +234,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 
 
 var TimePassed = 0;
+var newDay = false;
 function startCountdown(durationInSeconds) {
     let remainingTime = durationInSeconds;
 
@@ -243,6 +244,11 @@ function startCountdown(durationInSeconds) {
             Changed = false;
             startCountdown(Math.max(TimeLimit*60 - TimePassed, 1));
             clearInterval(interval);
+            return;
+        }
+        if(newDay){
+            clearInterval(interval);
+            newDay = false;
             return;
         }
         // Decrease the remaining time
@@ -268,6 +274,7 @@ function startCountdown(durationInSeconds) {
         }
         chrome.runtime.sendMessage({action: "updateTimer", time: remainingTime});
 
+
     }, 1000); // 1000 milliseconds = 1 second
 }
 
@@ -287,15 +294,48 @@ function GetDate(){
 }
 
 
-const interval = setInterval(() => {
-    if(GetDate() == "0:0:0"){
-        TimeOver = false;
-        Changed = true;
-        TimePassed = 0;
-        startCountdown(TimeLimit*60);
-    }
-}, 1000); // 1000 milliseconds = 1 second
+function doSomething() {
+    newDay = true;
+    Changed = false;
+    TimeOver = false;
+    TimePassed = 0;
+    startCountdown(TimeLimit * 60);
+}
+
+function tick() {
+    // Re-calculate the timestamp for the next day
+    let next = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+    // Adjust the timestamp if you want to run the code
+    // around the same time of each day (e.g. 10:00 am)
+    next.setHours(10);
+    next.setMinutes(0);
+    next.setSeconds(0);
+    next.setMilliseconds(0);
+
+    // Save the new timestamp
+    localStorage.savedTimestamp = next.getTime();
+
+    // Run the function
+    doSomething();
+}
 
 
+function checkTimestamp() {
+    if (localStorage.savedTimestamp)
+    {
+        let timestamp = parseInt(localStorage.savedTimestamp);
+
+        if (Date.now() >= timestamp){
+            tick();
+        }
+        else {
+            tick();
+        }
+    }  
+}
+
+// Check every minute
+setInterval(checkTimestamp, 60000);
 
 
