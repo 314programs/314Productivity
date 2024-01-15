@@ -101,7 +101,7 @@ function checkActiveTabUrl() {
             
             if(ScoldButtonOn && CheckLimited(CurTab)){
                 ScoldTimer++;
-                if(ScoldTimer >= ScoldLimit){
+                if(ScoldTimer >= ScoldLimit*60){
                     playAudio(AudioName);
                     createNotification(UserMessage);
                     ScoldTimer = 0;
