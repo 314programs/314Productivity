@@ -2,7 +2,7 @@
 const LimitTimeElement = document.getElementById("LimitTime")
 const LimitButtonElement = document.getElementById("LimitButton")
 const LimitWebsiteElement = document.getElementById("LimitWebsite")
-
+const LimitWarningElement = document.getElementById("LimitWarning")
 
 const BlockButtonElement = document.getElementById("BlockButton")
 const BlockWebsiteElement = document.getElementById("BlockWebsite")
@@ -14,9 +14,10 @@ const ScoldTimeElement = document.getElementById("ScoldTime")
 const PlayButtonElement = document.getElementById("PlayButton")
 const ScoldListElement = document.querySelector("#ScoldList select")
 const ScoldTextElement = document.getElementById("ScoldText")
-
+const ScoldWarningElement = document.getElementById("ScoldWarning")
 
 const SaveButtonElement = document.getElementById("SaveButton")
+const SaveWarningElement = document.getElementById("SaveWarning")
 
 
 var MyAudios = []
@@ -28,27 +29,34 @@ function stopAllJavaScriptAudio() {
 }
 
 SaveButtonElement.onclick = () => {
-    const prefs = {
-        LimitTime: LimitTimeElement.value,
-        LimitButton: LimitButtonElement.value,
-        LimitWebsite: LimitWebsiteElement.value,
-        
-        BlockButton: BlockButtonElement.value,
-        BlockWebsite: BlockWebsiteElement.value,
-
-        RemainTime: RemainTimeElement.value,
-
-        ScoldButton: ScoldButtonElement.value,
-        ScoldTime: ScoldTimeElement.value,
-        ScoldList: ScoldListElement.selectedIndex,
-        ScoldText: ScoldTextElement.value
+    if(LimitValid && ScoldValid){
+        SaveWarningElement.textContent = "";
+        const prefs = {
+            LimitTime: LimitTimeElement.value,
+            LimitButton: LimitButtonElement.value,
+            LimitWebsite: LimitWebsiteElement.value,
+            
+            BlockButton: BlockButtonElement.value,
+            BlockWebsite: BlockWebsiteElement.value,
+    
+            RemainTime: RemainTimeElement.value,
+    
+            ScoldButton: ScoldButtonElement.value,
+            ScoldTime: ScoldTimeElement.value,
+            ScoldList: ScoldListElement.selectedIndex,
+            ScoldText: ScoldTextElement.value
+        }
+        chrome.runtime.sendMessage({action: "LimitChange", content: LimitWebsiteElement.value});
+        chrome.runtime.sendMessage({action: "BlockChange", content: BlockWebsiteElement.value});
+        chrome.runtime.sendMessage({action: "LimitButton", content: LimitButtonElement.value});
+        chrome.runtime.sendMessage({action: "BlockButton", content: BlockButtonElement.value});
+        chrome.runtime.sendMessage({action: "LimitTime", content: LimitTimeElement.value});
+        chrome.runtime.sendMessage({event: "onStart", prefs});
     }
-    chrome.runtime.sendMessage({action: "LimitChange", content: LimitWebsiteElement.value});
-    chrome.runtime.sendMessage({action: "BlockChange", content: BlockWebsiteElement.value});
-    chrome.runtime.sendMessage({action: "LimitButton", content: LimitButtonElement.value});
-    chrome.runtime.sendMessage({action: "BlockButton", content: BlockButtonElement.value});
-    chrome.runtime.sendMessage({action: "LimitTime", content: LimitTimeElement.value});
-    chrome.runtime.sendMessage({event: "onStart", prefs});
+    else{
+        SaveWarningElement.textContent = "Cannot save until input is valid";
+    }
+
 }
 
 function ToggleButton(ButtonElement, On, Off){
@@ -112,8 +120,33 @@ PlayButtonElement.onclick = function(){
     }
 }
 
-LimitTimeElement.onchange = function(){
+var LimitValid = true;
+var ScoldValid = true;
+function checkString(string) {
+    return /^[0-9]*$/.test(string);
+}
 
+LimitTimeElement.onchange = function(){
+    if(!checkString(LimitTimeElement.value) || (checkString(LimitTimeElement.value) && LimitTimeElement.value > 1440)){
+        LimitWarningElement.textContent = "Please enter a number that is smaller than 1441";
+        LimitValid = false;
+    }
+    else{
+        LimitWarningElement.textContent = "";
+        LimitValid = true;
+    }
+}
+
+ScoldTimeElement.onchange = function(){
+    console.log(ScoldTimeElement.value);
+    if(!checkString(ScoldTimeElement.value) || (checkString(ScoldTimeElement.value) && ScoldTimeElement.value > 1440)){
+        ScoldWarningElement.textContent = "Please enter a number that is smaller than 1441";
+        ScoldValid = false;
+    }
+    else{
+        ScoldWarningElement.textContent = "";
+        ScoldValid = true;
+    }
 }
 
 

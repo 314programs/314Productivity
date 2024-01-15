@@ -23,7 +23,8 @@
             <label class="label" style = "margin-right: 20px">Time limit (Minutes)</label>
             <input class="button is-small mr-2 is-success" type="submit" value="Limit on" id = "LimitButton">
         </div>
-        <input class="input" type="text" placeholder="Input minute(integer)" style = "margin-bottom: 15px;" id = "LimitTime" value = 60>
+        <input class="input" type="text" placeholder="Input minute(integer)" id = "LimitTime" value = 60>
+        <p style="color:red; font-size:10px; margin-bottom: 15px;" id = "LimitWarning"></p>
 
 
 
@@ -43,7 +44,8 @@
             <label class="label" style = "margin-right: 20px">Scolding timer</label>
             <input class="button is-success is-small mr-2" type="submit" value="Scolding on" id = "ScoldButton">
         </div>
-        <input class="input" type="text" placeholder="Input minute(integer)" style = "margin-bottom: 15px;" value = "20" id = "ScoldTime">
+        <input class="input" type="text" placeholder="Input minute(integer)" value = "20" id = "ScoldTime">
+        <p style="color:red; font-size:10px; margin-bottom: 15px;" id = "ScoldWarning"></p>
 
 
 
@@ -80,6 +82,7 @@
 
     <div class="container m-3">
         <button class="button is-success is-fullwidth" id = "SaveButton">Save</button>
+        <p style="color:red; font-size:10px; margin-bottom: 15px;" id = "SaveWarning"></p>
     </div>
 
 </body>

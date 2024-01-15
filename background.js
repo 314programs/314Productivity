@@ -135,8 +135,9 @@ chrome.storage.local.get(["LimitTime", "LimitButton", "LimitWebsite", "BlockButt
     if(LimitWebsite != undefined) LimitWebsiteList = LimitWebsite.split("\n");
     if(BlockWebsite != undefined) BlockWebsiteList = BlockWebsite.split("\n");
     if(TimeLimit != undefined) TimeLimit = LimitTime;
-    
+    startCountdown(TimeLimit);
 })
+
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     if (message.action == "LimitButton"){
@@ -210,7 +211,7 @@ function GetDate(){
 
 
 
-startCountdown(TimeLimit);
+
 const interval = setInterval(() => {
     if(GetDate() == "0:0:0"){
         TimeOver = false;
