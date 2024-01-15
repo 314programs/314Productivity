@@ -1,17 +1,17 @@
 let data = {
     "events": "onStop/onStart",
     "prefs":{
-        "LimitTime": "30", 
-        "LimitButton:": "Limit on",
+        "LimitTime": "60", 
+        "LimitButton": "Limit on",
         "LimitWebsite": "",
 
         "BlockButton": "Block on",
-        "BlockWebsite": "https://twitter.com/",
+        "BlockWebsite": "",
 
-        "RemainTime": "1800",
+        "RemainTime": "3600",
 
         "ScoldButton": "Scolding on",
-        "ScoldTime": "15",
+        "ScoldTime": "20",
         "ScoldList": "None",
         "ScoldText": "You should be productive... NOW!"
     }
@@ -25,7 +25,6 @@ chrome.runtime.onMessage.addListener(data => {
         default:
             break;
     }
-    
 })
 
 var LimitWebsiteList = [];
@@ -114,16 +113,32 @@ setInterval(checkActiveTabUrl, pollingInterval);
 var LimitButtonOn = false;
 var BlockButtonOn = false;
 var Changed = false;
+var TimeLimit = 60;
 
-//LimitChange, BlockChange, LimitTime, LimitButton, BlockButton
-if(data.prefs.LimitButton == "Limit on") LimitButtonOn = true;
-if(data.prefs.BlockButton == "Block on") BlockButtonOn = true;
-LimitWebsiteList = data.prefs.LimitWebsite.split("\n");
-BlockWebsiteList = data.prefs.BlockWebsite.split("\n");
-TimeLimit = data.prefs.LimitTime;
+
+chrome.storage.local.get(["LimitTime", "LimitButton", "LimitWebsite", "BlockButton", "BlockWebsite"], (result) => {
+    const {LimitTime, LimitButton, LimitWebsite, BlockButton, BlockWebsite} = result;
+    if(LimitButton == undefined){
+        LimitButtonOn = true;
+    }
+    else{
+        if(LimitButton == "Limit on") LimitButtonOn = true;
+    }
+
+    if(BlockButton == undefined){
+        BlockButtonOn = true;
+    }
+    else{
+        if(BlockButton == "Block on") BlockButtonOn = true;
+    }
+
+    if(LimitWebsite != undefined) LimitWebsiteList = LimitWebsite.split("\n");
+    if(BlockWebsite != undefined) BlockWebsiteList = BlockWebsite.split("\n");
+    if(TimeLimit != undefined) TimeLimit = LimitTime;
+    
+})
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-    console.log(message.action + " " + message.content);
     if (message.action == "LimitButton"){
         if(message.content == "Limit on") LimitButtonOn = true;
         else LimitButtonOn = false;
@@ -134,7 +149,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
         else BlockButtonOn = false;
     }
 
-    if(message.action == "LimitTime" && message.content != TimeLimit){
+    if(message.action == "LimitTime" && message.content != TimeLimit && message.content != ''){
         Changed = true;
         TimeLimit = message.content;
 
@@ -149,7 +164,7 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 
 
 var TimePassed = 0;
-var TimeLimit;
+
 function startCountdown(durationInSeconds) {
     let remainingTime = durationInSeconds;
 
@@ -192,6 +207,7 @@ function GetDate(){
     const currentTime = `${hours}:${minutes}:${seconds}`;
     return currentTime;
 }
+
 
 
 startCountdown(TimeLimit);
