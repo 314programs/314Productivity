@@ -190,7 +190,7 @@ chrome.storage.local.get(["LimitTime", "LimitButton", "LimitWebsite", "BlockButt
     if(ScoldText != undefined) UserMessage = ScoldText;
     if(ScoldTime != undefined) ScoldLimit = ScoldTime;
     if(ScoldAudio != undefined) AudioName = ScoldAudio;
-    startCountdown(TimeLimit * 60);
+    startCountdown(TimeLimit*60);
 })
 
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
@@ -299,7 +299,7 @@ function doSomething() {
     Changed = false;
     TimeOver = false;
     TimePassed = 0;
-    startCountdown(TimeLimit * 60);
+    startCountdown(TimeLimit*60);
 }
 
 function tick() {
