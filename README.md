@@ -1,5 +1,9 @@
 # 314Productivity
- Chrome extension that is meant for 314programs to boost her productivity
+
+**About**
+Chrome extension that is meant for 314programs to boost her productivity.
+This program is currently in beta.
+Feel free to test this extension and leave some feedback.
 
 
 **How to install 314Productivity?**
