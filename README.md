@@ -10,7 +10,7 @@ Feel free to test this extension and leave some feedback.
 
 
 **How to install 314Productivity?**
-1. Download this Github folder.
+1. Download this Github folder. (Click on code and download as ZIP file)
 2. Unzip the downloaded Github folder.
 3. Open extension settings on your browser.
 4. Click on developer mode.
