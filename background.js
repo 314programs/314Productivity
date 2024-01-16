@@ -303,15 +303,17 @@ function GetDate(){
     return currentTime;
 }
 
-chrome.storage.local.get(['lastRunDate'], function(result) {
-    const today = new Date().toDateString();
-    if (result.lastRunDate !== today) {
-        // Run your daily function
-        doSomething();
+function ChangeDate(){
+    chrome.storage.local.get(['lastRunDate'], function(result) {
+        const today = new Date().toDateString();
+        if (result.lastRunDate !== today) {
+            // Run your daily function
+            doSomething();
+    
+            // Update the last run date
+            chrome.storage.local.set({ 'lastRunDate': today });
+        }
+    });
+}
 
-        // Update the last run date
-        chrome.storage.local.set({ 'lastRunDate': today });
-    }
-});
-
-
+setInterval(ChangeDate, pollingInterval);
