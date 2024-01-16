@@ -279,6 +279,14 @@ function startCountdown(durationInSeconds) {
 }
 
 
+function doSomething() {
+    newDay = true;
+    Changed = false;
+    TimeOver = false;
+    TimePassed = 0;
+    startCountdown(TimeLimit*60);
+}
+
 function GetDate(){
     // Get the current date and time
     const now = new Date();
@@ -293,49 +301,15 @@ function GetDate(){
     return currentTime;
 }
 
+chrome.storage.local.get(['lastRunDate'], function(result) {
+    const today = new Date().toDateString();
+    if (result.lastRunDate !== today) {
+        // Run your daily function
+        doSomething();
 
-function doSomething() {
-    newDay = true;
-    Changed = false;
-    TimeOver = false;
-    TimePassed = 0;
-    startCountdown(TimeLimit*60);
-}
-
-function tick() {
-    // Re-calculate the timestamp for the next day
-    let next = new Date(Date.now() + 24 * 60 * 60 * 1000);
-
-    // Adjust the timestamp if you want to run the code
-    // around the same time of each day (e.g. 10:00 am)
-    next.setHours(10);
-    next.setMinutes(0);
-    next.setSeconds(0);
-    next.setMilliseconds(0);
-
-    // Save the new timestamp
-    localStorage.savedTimestamp = next.getTime();
-
-    // Run the function
-    doSomething();
-}
-
-
-function checkTimestamp() {
-    if (localStorage.savedTimestamp)
-    {
-        let timestamp = parseInt(localStorage.savedTimestamp);
-
-        if (Date.now() >= timestamp){
-            tick();
-        }
-        else {
-            tick();
-        }
-    }  
-}
-
-// Check every minute
-setInterval(checkTimestamp, 60000);
+        // Update the last run date
+        chrome.storage.local.set({ 'lastRunDate': today });
+    }
+});
 
 
