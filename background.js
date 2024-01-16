@@ -225,7 +225,8 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     if(message.action == "ScoldMessage"){
         UserMessage = message.content;
     }
-    if(message.action == "ScoldChange"){
+    if(message.action == "ScoldChange" && message.content != ScoldLimit){
+        ScoldTimer = 0;
         ScoldLimit = message.content;
     }
     if(message.action == "AudioChange"){
