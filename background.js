@@ -106,9 +106,11 @@ function checkActiveTabUrl() {
                     createNotification(UserMessage);
                     ScoldTimer = 0;
                 }
+                chrome.runtime.sendMessage({action: "updateScold", time: ScoldLimit*60 - ScoldTimer});
             }
             else{
                 ScoldTimer = 0;
+                chrome.runtime.sendMessage({action: "updateScold", time: ScoldLimit*60});
             }
         }
     });
@@ -225,7 +227,6 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
     }
     if(message.action == "ScoldChange"){
         ScoldLimit = message.content;
-        ScoldTimer = 0;
     }
     if(message.action == "AudioChange"){
         AudioName = message.content;

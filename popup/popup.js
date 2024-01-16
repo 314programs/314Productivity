@@ -8,6 +8,7 @@ const BlockButtonElement = document.getElementById("BlockButton")
 const BlockWebsiteElement = document.getElementById("BlockWebsite")
 
 const RemainTimeElement = document.getElementById("RemainTime")
+const ScoldRemainElement = document.getElementById("ScoldRemain");
 
 const ScoldButtonElement = document.getElementById("ScoldButton")
 const ScoldTimeElement = document.getElementById("ScoldTime")
@@ -155,6 +156,19 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
         if(second < 10) second = "0" + second;
 
         RemainTimeElement.textContent = hour + ":" + minute + ":" + second;
+    }
+
+    if(message.action === "updateScold"){
+        var hour = Math.floor(message.time/3600);
+        message.time -= hour * 3600;
+        var minute = Math.floor(message.time/60);
+        var second = Math.floor(message.time%60);
+
+        if(hour < 10) hour = "0" + hour;
+        if(minute < 10) minute = "0" + minute;
+        if(second < 10) second = "0" + second;
+
+        ScoldRemainElement.textContent = hour + ":" + minute + ":" + second;
     }
 });
 
